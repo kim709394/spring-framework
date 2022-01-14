@@ -136,6 +136,7 @@ public interface BeanFactory {
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the specified name
 	 * @throws BeansException if the bean could not be obtained
 	 */
+	//todo 循环依赖： 默认是AbstractBeanFactory处理
 	Object getBean(String name) throws BeansException;
 
 	/**

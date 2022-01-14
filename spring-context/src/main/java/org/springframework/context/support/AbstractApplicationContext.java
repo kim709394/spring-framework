@@ -547,6 +547,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				/**
+				 * todo 初始化所有剩下的⾮懒加载的单例bean 初始化创建⾮懒加载⽅式的单例Bean实例（未设置属性），
+				 * 装配属性初始化⽅法调⽤（⽐如调⽤afterPropertiesSet⽅法、init-method⽅法）
+				 * 	调⽤BeanPostProcessor（后置处理器）对实例bean进⾏后置处
+				 *
+				 */
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
