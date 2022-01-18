@@ -424,6 +424,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		Object result = existingBean;
+		//todo 获取每一个后置处理器，循环处理
+		//AbstractAutoProxyCreator这个后置处理器用来检测该bean是否需要被代理，如果需要则生成代理类
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessAfterInitialization(result, beanName);
 			if (current == null) {
@@ -500,7 +502,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			//todo 这里检测bean是否需要被代理
+			//todo 这里检测bean是否需要被代理而不是一个目标类
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -594,7 +596,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			//todo 自动装配bean的属性依赖
 			populateBean(beanName, mbd, instanceWrapper);
-			//todo 进行初始化操作
+			//todo 进行初始化操作，后置处理器以及初始化方法和ware组件装配等
+			//aop代理也在这里进行检测
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1782,6 +1785,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			//todo 这里进行后置处理器的调用
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
