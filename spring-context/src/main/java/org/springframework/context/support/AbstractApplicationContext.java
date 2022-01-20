@@ -519,6 +519,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			//todo 获取BeanFactory；默认实现是DefaultListableBeanFactory ,xml模式：加载BeanDefition 并注册到 BeanDefitionRegistry
+			//注解模式则是在refresh()之前的AnnotationConfigApplicationContext构造方法中执行加载BeanDefition
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -640,6 +642,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//刷新beanFactory
 		refreshBeanFactory();
 		return getBeanFactory();
 	}
@@ -1382,6 +1385,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @throws IllegalStateException if already initialized and multiple refresh
 	 * attempts are not supported
 	 */
+	//实现类是：注解方式启动：GenericApplicationContext，xml方式启动：AbstractRefreshableApplicationContext
 	protected abstract void refreshBeanFactory() throws BeansException, IllegalStateException;
 
 	/**
