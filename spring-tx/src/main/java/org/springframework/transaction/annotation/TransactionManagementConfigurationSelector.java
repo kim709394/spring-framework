@@ -44,11 +44,14 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	 * respectively.
 	 */
 	@Override
+	//调用导入方法
 	protected String[] selectImports(AdviceMode adviceMode) {
 		switch (adviceMode) {
+			//使用jdk代理的方式
 			case PROXY:
 				return new String[] {AutoProxyRegistrar.class.getName(),
 						ProxyTransactionManagementConfiguration.class.getName()};
+				//使用aspectj在类编译和加载期切入字节码进行代理的方式
 			case ASPECTJ:
 				return new String[] {determineTransactionAspectClass()};
 			default:

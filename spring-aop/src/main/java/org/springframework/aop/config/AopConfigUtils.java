@@ -131,7 +131,7 @@ public abstract class AopConfigUtils {
 			}
 			return null;
 		}
-
+		//注册aop代理检测bean，其实是一个后置处理器
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);

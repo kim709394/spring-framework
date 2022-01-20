@@ -87,6 +87,7 @@ public interface BeanDefinitionReader {
 	 * @param resource the resource descriptor
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
+	 * xml模式：XmlBeanDefinitionReader实现类
 	 */
 	int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException;
 
