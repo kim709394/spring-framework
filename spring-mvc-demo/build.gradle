@@ -1,0 +1,57 @@
+// tomcat: 以下配置会在第一次启动时下载插件二进制文件
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'war'
+}
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.tomcat' //tomcat: 插件
+group 'org.springframework'
+version '5.1.21.BUILD-SNAPSHOT'
+
+sourceCompatibility = 1.8
+project.webAppDirName = "src/main/webapp"
+
+
+
+repositories {
+    mavenCentral()
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile(project(":spring-webmvc"))
+
+    // tomcat: 将Tomcat运行时库添加到配置tomcat中: (此处为Tomcat8)
+    def tomcatVersion = '9.0.1'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+}
+
+// tomcat: 一些协议设置
+tomcat {
+    httpPort = 8088
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+tomcatRun.contextPath = '/'
+tomcatRunWar.contextPath = '/'
+
+
+// UTF-8
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
