@@ -428,6 +428,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @param response current HTTP response
 	 * @throws Exception if rendering failed
 	 */
+	//InternalResourceView,一般配置这个视图
 	protected abstract void renderMergedOutputModel(
 			Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception;
 

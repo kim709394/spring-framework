@@ -977,6 +977,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			while (attrNames.hasMoreElements()) {
 				String attrName = (String) attrNames.nextElement();
 				if (this.cleanupAfterInclude || attrName.startsWith(DEFAULT_STRATEGIES_PREFIX)) {
+					//请求的一些属性值进行快照存储
 					attributesSnapshot.put(attrName, request.getAttribute(attrName));
 				}
 			}
@@ -1194,7 +1195,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// Did the handler return a view to render?
 		//如果需要渲染视图返回则进入下面操作
 		if (mv != null && !mv.wasCleared()) {
-			//
+			//创建视图
 			render(mv, request, response);
 			if (errorView) {
 				WebUtils.clearErrorRequestAttributes(request);

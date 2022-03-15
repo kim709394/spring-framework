@@ -178,6 +178,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 		ServletServerHttpResponse outputMessage = createOutputMessage(webRequest);
 
 		// Try even with null return value. ResponseBodyAdvice could get involved.
+		//使用消息转换器进行返回值处理
 		writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage);
 	}
 
