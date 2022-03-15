@@ -162,19 +162,45 @@ import org.springframework.web.util.WebUtils;
 @SuppressWarnings("serial")
 public class DispatcherServlet extends FrameworkServlet {
 
-	/** Well-known name for the MultipartResolver object in the bean factory for this namespace. */
+	/**
+	 * springmvc九大组件
+	 * */
+
+	/** Well-known name for the MultipartResolver object in the bean factory for this namespace.
+	 * MultipartResolver ⽤于上传请求，通过将普通的请求包装成 MultipartHttpServletRequest 来实
+	 * 现。MultipartHttpServletRequest 可以通过 getFile() ⽅法 直接获得⽂件。如果上传多个⽂件，还
+	 * 可以调⽤ getFileMap()⽅法得到Map<FileName，File>这样的结构，MultipartResolver 的作⽤就
+	 * 是封装普通的请求，使其拥有⽂件上传的功能。
+	 * */
 	public static final String MULTIPART_RESOLVER_BEAN_NAME = "multipartResolver";
 
-	/** Well-known name for the LocaleResolver object in the bean factory for this namespace. */
+	/** Well-known name for the LocaleResolver object in the bean factory for this namespace.
+	 * ViewResolver 组件的 resolveViewName ⽅法需要两个参数，⼀个是视图名，⼀个是 Locale。
+	 * LocaleResolver ⽤于从请求中解析出 Locale，⽐如中国 Locale 是 zh-CN，⽤来表示⼀个区域。这
+	 * 个组件也是 i18n 的基础。
+	 * */
 	public static final String LOCALE_RESOLVER_BEAN_NAME = "localeResolver";
 
-	/** Well-known name for the ThemeResolver object in the bean factory for this namespace. */
+	/** Well-known name for the ThemeResolver object in the bean factory for this namespace.
+	 * ThemeResolver 组件是⽤来解析主题的。主题是样式、图⽚及它们所形成的显示效果的集合。
+	 * Spring MVC 中⼀套主题对应⼀个 properties⽂件，⾥⾯存放着与当前主题相关的所有资源，如图
+	 * ⽚、CSS样式等。创建主题⾮常简单，只需准备好资源，然后新建⼀个“主题名.properties”并将资
+	 * 源设置进去，放在classpath下，之后便可以在⻚⾯中使⽤了。SpringMVC中与主题相关的类有
+	 * ThemeResolver、ThemeSource和Theme。ThemeResolver负责从请求中解析出主题名，
+	 * ThemeSource根据主题名找到具体的主题，其抽象也就是Theme，可以通过Theme来获取主题和
+	 * 具体的资源。
+	 * */
 	public static final String THEME_RESOLVER_BEAN_NAME = "themeResolver";
 
 	/**
 	 * Well-known name for the HandlerMapping object in the bean factory for this namespace.
 	 * Only used when "detectAllHandlerMappings" is turned off.
 	 * @see #setDetectAllHandlerMappings
+	 *
+	 * HandlerMapping 是⽤来查找 Handler 的，也就是处理器，具体的表现形式可以是类，也可以是
+	 * ⽅法。⽐如，标注了@RequestMapping的每个⽅法都可以看成是⼀个Handler。Handler负责具
+	 * 体实际的请求处理，在请求到达后，HandlerMapping 的作⽤便是找到请求相应的处理器
+	 * Handler 和 Interceptor.
 	 */
 	public static final String HANDLER_MAPPING_BEAN_NAME = "handlerMapping";
 
@@ -182,6 +208,11 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Well-known name for the HandlerAdapter object in the bean factory for this namespace.
 	 * Only used when "detectAllHandlerAdapters" is turned off.
 	 * @see #setDetectAllHandlerAdapters
+	 *
+	 * HandlerAdapter 是⼀个适配器。因为 Spring MVC 中 Handler 可以是任意形式的，只要能处理请
+	 * 求即可。但是把请求交给 Servlet 的时候，由于 Servlet 的⽅法结构都是
+	 * doService(HttpServletRequest req,HttpServletResponse resp)形式的，要让固定的 Servlet 处理
+	 * ⽅法调⽤ Handler 来进⾏处理，便是 HandlerAdapter 的职责。
 	 */
 	public static final String HANDLER_ADAPTER_BEAN_NAME = "handlerAdapter";
 
@@ -189,11 +220,18 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Well-known name for the HandlerExceptionResolver object in the bean factory for this namespace.
 	 * Only used when "detectAllHandlerExceptionResolvers" is turned off.
 	 * @see #setDetectAllHandlerExceptionResolvers
+	 *
+	 * HandlerExceptionResolver ⽤于处理 Handler 产⽣的异常情况。它的作⽤是根据异常设置
+	 * ModelAndView，之后交给渲染⽅法进⾏渲染，渲染⽅法会将 ModelAndView 渲染成⻚⾯。
 	 */
 	public static final String HANDLER_EXCEPTION_RESOLVER_BEAN_NAME = "handlerExceptionResolver";
 
 	/**
 	 * Well-known name for the RequestToViewNameTranslator object in the bean factory for this namespace.
+	 *
+	 * RequestToViewNameTranslator 组件的作⽤是从请求中获取 ViewName.因为 ViewResolver 根据
+	 * ViewName 查找 View，但有的 Handler 处理完成之后,没有设置 View，也没有设置 ViewName，
+	 * 便要通过这个组件从请求中查找 ViewName。
 	 */
 	public static final String REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME = "viewNameTranslator";
 
@@ -201,11 +239,29 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Well-known name for the ViewResolver object in the bean factory for this namespace.
 	 * Only used when "detectAllViewResolvers" is turned off.
 	 * @see #setDetectAllViewResolvers
+	 *
+	 * ViewResolver即视图解析器，⽤于将String类型的视图名和Locale解析为View类型的视图，只有⼀
+	 * 个resolveViewName()⽅法。从⽅法的定义可以看出，Controller层返回的String类型视图名
+	 * viewName 最终会在这⾥被解析成为View。View是⽤来渲染⻚⾯的，也就是说，它会将程序返回
+	 * 的参数和数据填⼊模板中，⽣成html⽂件。ViewResolver 在这个过程主要完成两件事情：
+	 * ViewResolver 找到渲染所⽤的模板（第⼀件⼤事）和所⽤的技术（第⼆件⼤事，其实也就是找到
+	 * 视图的类型，如JSP）并填⼊参数。默认情况下，Spring MVC会⾃动为我们配置⼀个
+	 * InternalResourceViewResolver,是针对 JSP 类型视图的。
+	 *
 	 */
 	public static final String VIEW_RESOLVER_BEAN_NAME = "viewResolver";
 
 	/**
 	 * Well-known name for the FlashMapManager object in the bean factory for this namespace.
+	 *
+	 * FlashMap ⽤于重定向时的参数传递，⽐如在处理⽤户订单时候，为了避免重复提交，可以处理完
+	 * post请求之后重定向到⼀个get请求，这个get请求可以⽤来显示订单详情之类的信息。这样做虽然
+	 * 可以规避⽤户重新提交订单的问题，但是在这个⻚⾯上要显示订单的信息，这些数据从哪⾥来获得
+	 * 呢？因为重定向时么有传递参数这⼀功能的，如果不想把参数写进URL（不推荐），那么就可以通
+	 * 过FlashMap来传递。只需要在重定向之前将要传递的数据写⼊请求（可以通过
+	 * ServletRequestAttributes.getRequest()⽅法获得）的属性OUTPUT_FLASH_MAP_ATTRIBUTE
+	 * 中，这样在重定向之后的Handler中Spring就会⾃动将其设置到Model中，在显示订单信息的⻚⾯
+	 * 上就可以直接从Model中获取数据。FlashMapManager 就是⽤来管理 FalshMap 的。
 	 */
 	public static final String FLASH_MAP_MANAGER_BEAN_NAME = "flashMapManager";
 
@@ -285,6 +341,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
 		try {
+			//读取默认的策略配置文件：speing-webmvc工程resources/org.springframework.web.servlet.DispatcherServlet.properties
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
@@ -908,6 +965,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//记录日志
 		logRequest(request);
 
 		// Keep a snapshot of the request attributes in case of an include,
@@ -925,11 +983,12 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		// Make framework objects available to handlers and view objects.
+		//往请求中设置一些公共的属性
 		request.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, getWebApplicationContext());
 		request.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, this.localeResolver);
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
-
+		//重定向参数传递处理器
 		if (this.flashMapManager != null) {
 			FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 			if (inputFlashMap != null) {
@@ -940,6 +999,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			//统一调度方法
 			doDispatch(request, response);
 		}
 		finally {
@@ -1000,8 +1060,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpServletRequest processedRequest = request;
 		HandlerExecutionChain mappedHandler = null;
+		//定义是否是文件上传请求变量,默认为false
 		boolean multipartRequestParsed = false;
-
+		//异步请求管理器
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
@@ -1009,17 +1070,29 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				//检查是否文件上传请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
+				/**根据mvc的自定义配置选择相应的请求处理器结合拦截器生成请求处理链进行处理
+				 * BeanNameUrlHandlerMapping:通过配置文件定义处理器的方式，早期版本，现在基本不使用
+				 * RequestMappingHandlerMapping:通过注解方式定义的映射处理器，目前主流方式
+				 */
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
+					//如果找不到对应的处理器，则返回404
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
 				// Determine handler adapter for the current request.
+				/**
+				 * 根据mvc的自定义配置选择合适的请求处理器适配器
+				 * HttpRequestHandlerAdapter：通过实现HttpRequestHandler接口来定义controller的方式，使用这个适配器
+				 * SimpleControllerHandlerAdapter:通过实现Controller接口来定义controller的方式，使用这个适配器
+				 * RequestMappingHandlerAdapter:通过注解定义controller的方式，使用这个适配器，此时HandlerMethod为处理器
+				 */
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1031,19 +1104,21 @@ public class DispatcherServlet extends FrameworkServlet {
 						return;
 					}
 				}
-
+				//拦截器的preHandle方法执行，如果有配置拦截器的话，如果被拦截则不往下执行
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Actually invoke the handler.
+				//controller请求处理器方法执行
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
-
+				//设置视图名
 				applyDefaultViewName(processedRequest, mv);
+				//拦截器的postHandle方法执行
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -1054,12 +1129,15 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
+			//视图的解析处理和响应
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
+			//始终会调用拦截器的afterCompletion方法
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
 		}
 		catch (Throwable err) {
+			//始终会调用拦截器的afterCompletion方法
 			triggerAfterCompletion(processedRequest, response, mappedHandler,
 					new NestedServletException("Handler processing failed", err));
 		}
@@ -1100,7 +1178,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			@Nullable Exception exception) throws Exception {
 
 		boolean errorView = false;
-
+		//处理异常
 		if (exception != null) {
 			if (exception instanceof ModelAndViewDefiningException) {
 				logger.debug("ModelAndViewDefiningException encountered", exception);
@@ -1114,7 +1192,9 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		// Did the handler return a view to render?
+		//如果需要渲染视图返回则进入下面操作
 		if (mv != null && !mv.wasCleared()) {
+			//
 			render(mv, request, response);
 			if (errorView) {
 				WebUtils.clearErrorRequestAttributes(request);
@@ -1132,6 +1212,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (mappedHandler != null) {
+			//拦截器的afterCompletion方法
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}
 	}
@@ -1338,14 +1419,17 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// Determine locale for request and apply it to the response.
+		//处理国际化
 		Locale locale =
 				(this.localeResolver != null ? this.localeResolver.resolveLocale(request) : request.getLocale());
 		response.setLocale(locale);
 
 		View view;
+		//获取视图名
 		String viewName = mv.getViewName();
 		if (viewName != null) {
 			// We need to resolve the view name.
+			//创建视图对象
 			view = resolveViewName(viewName, mv.getModelInternal(), locale, request);
 			if (view == null) {
 				throw new ServletException("Could not resolve view with name '" + mv.getViewName() +
@@ -1369,6 +1453,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			if (mv.getStatus() != null) {
 				response.setStatus(mv.getStatus().value());
 			}
+			//真正的视图渲染方法
 			view.render(mv.getModelInternal(), request, response);
 		}
 		catch (Exception ex) {
@@ -1410,6 +1495,10 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.viewResolvers != null) {
 			for (ViewResolver viewResolver : this.viewResolvers) {
+				/**
+				 * 取出已经配置好的视图解析器出来通过视图名解析视图
+				 * AbstractCachingViewResolver,通常配置的是InternalResourceView，AbstractCachingViewResolver是其父类
+				 * */
 				View view = viewResolver.resolveViewName(viewName, locale);
 				if (view != null) {
 					return view;

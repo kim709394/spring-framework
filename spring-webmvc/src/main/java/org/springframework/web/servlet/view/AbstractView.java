@@ -311,9 +311,11 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 					", model " + (model != null ? model : Collections.emptyMap()) +
 					(this.staticAttributes.isEmpty() ? "" : ", static attributes " + this.staticAttributes));
 		}
-
+		//合并一些静态属性和handler的model
 		Map<String, Object> mergedModel = createMergedOutputModel(model, request, response);
+		//设置一些响应头
 		prepareResponse(request, response);
+		//终极渲染
 		renderMergedOutputModel(mergedModel, getRequestToExpose(request), response);
 	}
 
@@ -439,7 +441,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 */
 	protected void exposeModelAsRequestAttributes(Map<String, Object> model,
 			HttpServletRequest request) throws Exception {
-
+		//遍历model属性设置进请求对象中
 		model.forEach((name, value) -> {
 			if (value != null) {
 				request.setAttribute(name, value);

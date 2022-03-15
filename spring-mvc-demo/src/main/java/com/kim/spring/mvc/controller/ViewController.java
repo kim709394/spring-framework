@@ -3,22 +3,22 @@ package com.kim.spring.mvc.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author huangjie
  * @description
- * @date 2022-03-12
+ * @date 2022-03-15
  */
-@RestController
-@RequestMapping("/demo")
-public class DemoController {
+@Controller
+@RequestMapping("/view")
+public class ViewController {
 
 
+	@GetMapping("/render")
+	public String render(){
 
-	@GetMapping("/get")
-	public String get(String name){
-		return "success"+name;
+		return "myView";
 	}
+
 
 }

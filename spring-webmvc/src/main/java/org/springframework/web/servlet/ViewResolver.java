@@ -53,6 +53,7 @@ public interface ViewResolver {
 	 * (typically in case of problems creating an actual View object)
 	 */
 	@Nullable
+	//AbstractCachingViewResolver
 	View resolveViewName(String viewName, Locale locale) throws Exception;
 
 }

@@ -94,6 +94,7 @@ public interface View {
 	 * @param response he HTTP response we are building
 	 * @throws Exception if rendering failed
 	 */
+	//跳转到AbstractView，InternalResourceView的父类
 	void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception;
 

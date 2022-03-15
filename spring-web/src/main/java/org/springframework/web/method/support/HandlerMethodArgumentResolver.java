@@ -57,6 +57,12 @@ public interface HandlerMethodArgumentResolver {
 	 * @throws Exception in case of errors with the preparation of argument values
 	 */
 	@Nullable
+	/**
+	 * 根据参数类型获取参数处理器
+	 * AbstractNamedValueMethodArgumentResolver:字符串键值对类型
+	 * MapMethodProcessor：Map类型
+	 * ModelMethodProcessor：Model类型
+	 * */
 	Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception;
 

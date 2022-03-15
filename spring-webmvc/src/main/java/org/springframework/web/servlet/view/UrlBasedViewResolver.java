@@ -472,7 +472,9 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		}
 
 		// Check for special "redirect:" prefix.
+		//判断视图名是否有redirect:前缀
 		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
+			//如果有redirect:前缀则切割出重定向的url，然后进行重定向
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl,
 					isRedirectContextRelative(), isRedirectHttp10Compatible());
@@ -480,17 +482,22 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 			if (hosts != null) {
 				view.setHosts(hosts);
 			}
+			//将view对象交给spring初始化
 			return applyLifecycleMethods(REDIRECT_URL_PREFIX, view);
 		}
 
 		// Check for special "forward:" prefix.
+		//检测视图名是否包含forward:前缀
 		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
+			//如果包含则切割出转发的url
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			InternalResourceView view = new InternalResourceView(forwardUrl);
+			//将view对象交给spring初始化
 			return applyLifecycleMethods(FORWARD_URL_PREFIX, view);
 		}
 
 		// Else fall back to superclass implementation: calling loadView.
+		//如果不带前缀，跳转到AbstractCachingViewResolver.createView()父类方法中执行，默认是转发
 		return super.createView(viewName, locale);
 	}
 
@@ -526,6 +533,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 */
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {
+		//构建视图对象
 		AbstractUrlBasedView view = buildView(viewName);
 		View result = applyLifecycleMethods(viewName, view);
 		return (view.checkResource(locale) ? result : null);
@@ -550,16 +558,17 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		Assert.state(viewClass != null, "No view class");
 
 		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(viewClass);
+		//拼接前缀和后缀，将逻辑视图名转换成物理视图名
 		view.setUrl(getPrefix() + viewName + getSuffix());
 
 		String contentType = getContentType();
 		if (contentType != null) {
 			view.setContentType(contentType);
 		}
-
+		//视图对象设置一些请求对象方面的属性
 		view.setRequestContextAttribute(getRequestContextAttribute());
 		view.setAttributesMap(getAttributesMap());
-
+		//对暴露的一些属性进行设置
 		Boolean exposePathVariables = getExposePathVariables();
 		if (exposePathVariables != null) {
 			view.setExposePathVariables(exposePathVariables);

@@ -144,6 +144,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * invoke subclass initialization.
 	 * @throws ServletException if bean properties are invalid (or required
 	 * properties are missing), or if subclass initialization fails.
+	 * 初始化servlet时进行mvc的一系列的初始化操作
 	 */
 	@Override
 	public final void init() throws ServletException {

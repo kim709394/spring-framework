@@ -98,13 +98,16 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 
 		NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
-
+		//获取参数名
 		Object resolvedName = resolveStringValue(namedValueInfo.name);
 		if (resolvedName == null) {
 			throw new IllegalArgumentException(
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
-
+		//获取参数值：RequestParamMethodArgumentResolver：从请求对象获取
+		/**
+		 * RequestParamMethodArgumentResolver:从请求对象获取参数值
+		 * */
 		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);
 		if (arg == null) {
 			if (namedValueInfo.defaultValue != null) {
@@ -204,6 +207,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 	 * @throws Exception in case of errors
 	 */
 	@Nullable
+	//RequestParamMethodArgumentResolver:从request对象中获取参数值
 	protected abstract Object resolveName(String name, MethodParameter parameter, NativeWebRequest request)
 			throws Exception;
 

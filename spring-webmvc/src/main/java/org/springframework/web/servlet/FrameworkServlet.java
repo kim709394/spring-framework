@@ -527,6 +527,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
+			//初始化web容器
 			this.webApplicationContext = initWebApplicationContext();
 			initFrameworkServlet();
 		}
@@ -590,12 +591,13 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// No context instance is defined for this servlet -> create a local one
 			wac = createWebApplicationContext(rootContext);
 		}
-
+		//如果spring容器没有接收到初始化事件，则在servlet初始化的时候进行mvc相关组件的初始化操作
 		if (!this.refreshEventReceived) {
 			// Either the context is not a ConfigurableApplicationContext with refresh
 			// support or the context injected at construction time had already been
 			// refreshed -> trigger initial onRefresh manually here.
 			synchronized (this.onRefreshMonitor) {
+				//初始化方法
 				onRefresh(wac);
 			}
 		}
@@ -836,9 +838,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * triggering a refresh of this servlet's context-dependent state.
 	 * @param event the incoming ApplicationContext event
 	 */
+	//spring容器初始化后发布事件执行
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		this.refreshEventReceived = true;
 		synchronized (this.onRefreshMonitor) {
+			//容器启动时初始化mvc各大组件
 			onRefresh(event.getApplicationContext());
 		}
 	}
@@ -891,6 +895,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #doService
 	 * @see #doHead
 	 */
+	/**
+	 * 请求进入DispatcherServlet后，不管是get还是post还是其他，统一进入processRequest(request,response)方法中进行处理
+	 * */
 	@Override
 	protected final void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -985,24 +992,27 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * <p>The actual event handling is performed by the abstract
 	 * {@link #doService} template method.
 	 */
+	//统一处理请求的方法
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
-
+		//国际化上下文构建
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
 		LocaleContext localeContext = buildLocaleContext(request);
-
+		//获取上一次请求的一些属性和变量
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+		//建立新的RequestAttributes对象
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
-
+		//web异步请求管理器
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
-
+		//把RequestAttributes对象存到本地线程中
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+			//处理请求
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {
