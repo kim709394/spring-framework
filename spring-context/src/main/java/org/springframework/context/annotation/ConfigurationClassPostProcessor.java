@@ -82,7 +82,14 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.CONFI
  * @author Juergen Hoeller
  * @author Phillip Webb
  * @since 3.0
+ *  spring内置工厂后置处理器，实现了BeanFactoryPostProcessor，在spring初始化所有bean信息转化为
+ *  BeanDefinition对象后调用postProcessBeanDefinitionRegistry()方法
+ * 这是一个专门解析系统注解的后置解析器，例如@Configuration，@Bean，@Component，@ComponentScan，@Import，
+ * @ImportResource等，解析@Import注解的ImportBeanDefinitionRegistrar导入bean注册器
+ * 以及ImportSelector导入bean选择器，两个都可以注册bean，并调用这个注册器
+ * registerBeanDefinitions()方法进行bean的注册
  */
+
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 
@@ -230,6 +237,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 		this.registriesPostProcessed.add(registryId);
 
+		//处理注解bean信息的注册
 		processConfigBeanDefinitions(registry);
 	}
 

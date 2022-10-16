@@ -95,6 +95,7 @@ public interface AutowireCandidateResolver {
 	 * @since 4.0
 	 */
 	@Nullable
+	//ContextAnnotationAutowireCandidateResolver默认处理
 	default Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
 		return null;
 	}
